@@ -1,0 +1,16 @@
+{
+  "name": "finals",
+  "version": "1.0.0",
+  "description": "Event Logger with COBOL backend and SQLite database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["node", "express", "sqlite3", "cobol", "event-logger"],
+  "author": "Roan Bricks",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}

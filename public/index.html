@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Logger</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>📅 Event Logger</h2>
+
+  <form id="eventForm">
+    <input type="text" id="event_name" placeholder="ENTER EVENT" required><br>
+    <input type="date" id="date" required><br>
+    <input type="text" id="happened" placeholder="EVENT HAPPENED" required><br>
+    <textarea id="description" placeholder="EVENT DESCRIPTION" rows="4"></textarea><br>
+    <button type="submit">Save</button>
+  </form>
+
+  <hr>
+
+  <h3>List of Events</h3>
+  <table id="eventTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Event Name</th>
+        <th>Date</th>
+        <th>Happened</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
