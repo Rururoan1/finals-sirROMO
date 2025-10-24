@@ -1,72 +1,58 @@
-const express = require("express");
+ const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+const cors = require("cors");
 const app = express();
 
-// Middleware
+// ✅ Enable CORS for all domains
+app.use(cors());
+
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // Serve frontend files
+app.use(express.static("public"));
 
-// Connect to database
-const db = new sqlite3.Database("./database.db", (err) => {
-  if (err) console.error("DB connection error:", err);
-  else console.log("Connected to SQLite database.");
-});
+ 
+ 
 
-// Create table if not exists
-db.run(`
-  CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_name TEXT,
-    date TEXT,
-    happened TEXT,
-    description TEXT
-  )
-`);
+const db = new sqlite3.Database("./database.db");
 
-// Serve frontend index.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// === API ROUTES ===
+// --- ROUTES ---
 app.post("/save", (req, res) => {
   const { event_name, date, happened, description } = req.body;
   db.run(
-    `INSERT INTO events (event_name, date, happened, description) VALUES (?, ?, ?, ?)`,
+    `INSERT INTO events (event_name, date, happened, description)
+     VALUES (?, ?, ?, ?)`,
     [event_name, date, happened, description],
-    (err) => {
-      if (err) return res.status(500).send("Error saving event");
-      res.send("Event saved successfully!");
+    function (err) {
+      if (err) res.status(500).send("Database error");
+      else res.send("Event saved!");
     }
   );
 });
 
 app.get("/view", (req, res) => {
-  db.all("SELECT * FROM events", (err, rows) => {
-    if (err) return res.status(500).send("Error retrieving events");
-    res.json(rows);
+  db.all("SELECT * FROM events", [], (err, rows) => {
+    if (err) res.status(500).send("Error fetching events");
+    else res.json(rows);
   });
 });
 
 app.delete("/delete/:id", (req, res) => {
   db.run(`DELETE FROM events WHERE id = ?`, [req.params.id], (err) => {
-    if (err) return res.status(500).send("Error deleting event");
-    res.send("Event deleted successfully!");
+    if (err) res.status(500).send("Delete failed");
+    else res.send("Deleted");
   });
 });
 
 app.put("/edit/:id", (req, res) => {
+  const { event_name } = req.body;
   db.run(
     `UPDATE events SET event_name = ? WHERE id = ?`,
-    [req.body.event_name, req.params.id],
+    [event_name, req.params.id],
     (err) => {
-      if (err) return res.status(500).send("Error updating event");
-      res.send("Event updated successfully!");
+      if (err) res.status(500).send("Edit failed");
+      else res.send("Updated");
     }
   );
 });
 
-// Render-compatible port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(10000, () => console.log("✅ Server running on port 10000"));
+// --- END ROUTES ---
